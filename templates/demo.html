@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PGAN Demo</title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script>
+    function onButtonClicked() {
+        let container = document.getElementById("container");
+        while (container.hasChildNodes())
+        {
+            container.removeChild( container.firstChild );
+        }
+
+        let length = document.querySelector('input[name="chk_info"]:checked').value;
+        axios.post('/convert_api', {'length': length})
+            .then(response => {
+                let data_length = response.data.data_length;
+                let file_name = response.data.file_name;
+                console.log(file_name);
+                for (step = 0; step < data_length; step++) {
+                    let img_child = document.createElement('img');
+                    let file_path = 'static/output/' + file_name + '_' + String(step) + '.png';
+                    img_child.src = file_path;
+                    container.appendChild(img_child);
+                }
+            })
+            .catch(error => {
+                console.log('no');
+                console.log(error);
+            })
+    }
+</script>
+<div>
+    <p>How many people do you want to meet?</p>
+
+    <input type="radio" name="chk_info" value="1" checked="checked">1
+    <input type="radio" name="chk_info" value="2">2
+    <input type="radio" name="chk_info" value="4">4
+
+</div>
+<button id="click_button"
+        type="button"
+        onclick="onButtonClicked();">
+    make
+</button>
+<div id="container">
+
+</div>
+</body>
+</html>
